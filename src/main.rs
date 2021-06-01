@@ -24,9 +24,15 @@ async fn render_errors(error: warp::reject::Rejection) -> Result<impl warp::Repl
 async fn main() {
     pretty_env_logger::init();
 
+    let code_str = r#"
+        let kim = 1;
+        let stanley = "robinson";
+        let mars = true;
+    "#;
+
     let posts = vec![
         Post::new("Post one", "This is a post! I really think it is."),
-        Post::new("Post two", "A second post, that's rediculous."),
+        Post::code("Post two", "This post has some code in it.  yay!", code_str),
     ];
 
     // GET /

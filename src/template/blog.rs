@@ -1,30 +1,35 @@
 use crate::model::{Post, PostVersion};
 use crate::template::layout::Layout;
+use crate::template::particles::Particle;
 
 markup::define! {
-    Particle<'a>(post: &'a PostVersion) {
+    PostSummary<'a>(post: &'a PostVersion) {
         .post {
             .{"post-title"} { @post.title }
             .published {
                 "Posted "
                 @post.published.format("%Y %B %e, a %A at %l:%M%P").to_string()
              }
-            .{"post-body"} { @post.body }
+            .{"post-summary"} {
+                @for particle in post.summary() {
+                    @Particle { particle }
+                }
+            }
         }
     }
 
-    Particles<'a>(posts: &'a [Post]) {
-        particles {
+    PostList<'a>(posts: &'a [Post]) {
+        .posts {
             @for post in *posts {
-                @Particle { post: post.current() }
+                @PostSummary { post: post.current() }
             }
         }
     }
 }
 
-pub fn blog<'a>(posts: &'a [Post]) -> Layout<'a, Particles> {
+pub fn blog<'a>(posts: &'a [Post]) -> Layout<'a, PostList> {
     Layout {
         title: "Marie's Blog",
-        body: Particles { posts },
+        body: PostList { posts },
     }
 }

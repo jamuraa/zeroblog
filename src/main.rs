@@ -22,7 +22,11 @@ async fn render_errors(error: warp::reject::Rejection) -> Result<impl warp::Repl
 
 #[tokio::main]
 async fn main() {
+    dotenv::dotenv().ok();
     pretty_env_logger::init();
+    if log::max_level() < log::Level::Info {
+        log::set_max_level(log::LevelFilter::Info);
+    }
 
     let code_str = r#"
         let kim = 1;
